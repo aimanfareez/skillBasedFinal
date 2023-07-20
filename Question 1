@@ -1,0 +1,25 @@
+import socket
+
+def send_student_id_to_server(host, port, student_id):
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        client_socket.connect((host, port))
+
+        client_socket.sendall(student_id.encode())
+
+        response = client_socket.recv(1024).decode()
+
+        print("Server response:", response)
+
+    except socket.error as e:
+        print("Error: Could not connect to the server.")
+    finally:
+        client_socket.close()
+
+if __name__ == "__main__":
+    your_student_id = "2022856328"
+    server_host = "izani.synology.me"
+    server_port = 8443
+
+    send_student_id_to_server(server_host, server_port, your_student_id)
