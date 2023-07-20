@@ -1,0 +1,50 @@
+import socket
+import threading
+import random
+
+# List of quotes
+quotes = [
+    "If you cannot fly, run. If you cannot run, walk. If you cannot walk, crawl. But no matter what you do. Just keep moving forward",
+    "Life is like a book. It is told in chapters and you cannot embrace the next chapter until you closed the current one.",
+    "Time is long but life is short",
+    "Life is like a ladder, You can't get to the top without taking steps",
+    "Love the life you live, Live the life you love",
+]
+
+def handle_client(client_socket):
+    # Randomly select a quote from the list
+    random_quote = random.choice(quotes)
+
+    # Send the quote to the client
+    client_socket.send(random_quote.encode())
+
+    # Close the connection
+    client_socket.close()
+
+def main():
+    # Create a TCP socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Bind the socket to a specific address and port
+    server_socket.bind(('192.168.222.128', 8888))
+
+    # Start listening for incoming connections
+    server_socket.listen(5)
+    print("Server listening on port 8888...")
+
+    try:
+        while True:
+            # Accept a client connection
+            client_socket, client_address = server_socket.accept()
+            print(f"Accepted connection from: {client_address}")
+
+            # Create a new thread to handle the client request
+            client_thread = threading.Thread(target=handle_client, args=(client_socket,))
+            client_thread.start()
+
+    except KeyboardInterrupt:
+        print("Server shutting down...")
+        server_socket.close()
+
+if __name__ == "__main__":
+    main()
