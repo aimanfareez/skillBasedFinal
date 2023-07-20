@@ -1,0 +1,26 @@
+import socket
+
+def main():
+    host = "192.168.222.128"
+    port = 8081
+
+    try:
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((host, port))
+
+        pressure_bar = float(input("Enter pressure value in bar: "))
+
+        client_socket.send(str(pressure_bar).encode())
+        atmosphere_standard = client_socket.recv(1024).decode()
+
+        print("Pressure in atmosphere-standard: {}".format(atmosphere_standard))
+
+    except ValueError:
+        print("Invalid input. Please provide a valid pressure value.")
+    except ConnectionRefusedError:
+        print("Connection refused. Make sure the server is running.")
+    finally:
+        client_socket.close()
+
+if __name__ == "__main__":
+    main()
